@@ -14,6 +14,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.lamti.thegameoflife.ui.theme.CELL_PADDING
 
 @Composable
 fun GameCell(
@@ -25,7 +26,7 @@ fun GameCell(
     Card(
         backgroundColor = color,
         modifier = Modifier
-            .padding(4.dp)
+            .padding(CELL_PADDING.dp)
             .aspectRatio(1f),
         elevation = 8.dp,
     ) {

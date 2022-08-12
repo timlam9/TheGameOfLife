@@ -12,8 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
 import com.lamti.thegameoflife.domain.GameEngine
-
-const val BOX_WIDTH = 20
+import com.lamti.thegameoflife.ui.theme.BOX_WIDTH
 
 @ExperimentalFoundationApi
 @Composable
