@@ -21,6 +21,7 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -34,10 +35,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.lamti.thegameoflife.domain.GameBoard
+import com.lamti.thegameoflife.domain.GameEngine
 import com.lamti.thegameoflife.ui.theme.TheGameOfLifeTheme
 
 @ExperimentalFoundationApi
 class MainActivity : ComponentActivity() {
+
+    private val gameEngine = GameEngine()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,13 +51,18 @@ class MainActivity : ComponentActivity() {
                 Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.background) {
                     val screenHeight = LocalConfiguration.current.screenHeightDp
                     val screenWidth = LocalConfiguration.current.screenWidthDp
+
                     val columns: Int = (screenWidth / 80)
                     val listRange: Int = (screenHeight / 80) * columns
 
-                    var board by remember { mutableStateOf(createBoard(listRange, columns)) }
+                    val board = gameEngine.board.collectAsState().value
+
+                    LaunchedEffect(Unit) {
+                        gameEngine.createRandomBoard(listRange, columns)
+                    }
 
                     LaunchedEffect(board) {
-                        board = board.nextState(board.columns)
+                        gameEngine.updateState()
                     }
 
                     GameGrid(board)
@@ -61,7 +71,7 @@ class MainActivity : ComponentActivity() {
                         contentAlignment = Alignment.BottomEnd,
                     ) {
                         RestartButton(modifier = Modifier.padding(16.dp)) {
-                            board = createBoard(listRange, columns)
+                            gameEngine.createRandomBoard(listRange, columns)
                         }
                     }
                 }
@@ -127,81 +137,7 @@ private fun GameCell(
     }
 }
 
-data class GameBox(
-    val status: LifeStatus = LifeStatus.Dead,
-    val index: Int
-)
 
-enum class LifeStatus(val color: Color) {
-    Dead(Color.DarkGray),
-    Alive(Color.White);
-
-    companion object {
-
-        fun random(): LifeStatus = if ((0..1).random() == 0) Dead else Alive
-    }
-}
-
-data class GameBoard(
-    val list: List<GameBox>,
-    val columns: Int
-)
-
-fun createBoard(range: Int, columns: Int): GameBoard = GameBoard(
-    list = (1..range).map { GameBox(status = LifeStatus.random(), index = it) },
-    columns = columns
-)
-
-fun GameBoard.nextState(boardColumns: Int): GameBoard {
-    val resultList = mutableListOf<GameBox>()
-    val neighboursList = mutableListOf<List<GameBox>>()
-    val neighboursMap: MutableMap<GameBox, List<GameBox>> = mutableMapOf()
-
-    list.forEach { box ->
-        val boxNeighbours = mutableListOf<GameBox>()
-        val neighboursInt: List<Int> = box.findNeighbours(boardColumns, list.size)
-
-        neighboursInt.forEach {
-            boxNeighbours.add(list[it - 1])
-        }
-
-        neighboursList.add(boxNeighbours)
-        neighboursMap[box] = boxNeighbours
-    }
-
-    neighboursMap.forEach { (gameBox, list) ->
-        val nextStateLifeStatus = gameBox.applyRules(list)
-        resultList.add(GameBox(status = nextStateLifeStatus, index = gameBox.index))
-    }
-
-    return GameBoard(list = resultList, columns = columns)
-}
-
-fun GameBox.findNeighbours(columns: Int, listSize: Int): List<Int> {
-    val north = if (index - columns > 0) index - columns else 0
-    val south = if (index + columns < listSize) index + columns else 0
-    val east = if (index.rem(columns) == 0) 0 else index + 1
-    val west = if ((index - 1).rem(columns) == 0) 0 else index - 1
-    val northWest = if (north == 0) 0 else north - 1
-    val northEast = if (north == 0) 0 else north + 1
-    val southWest = if (south == 0) 0 else south - 1
-    val southEast = if (south == 0) 0 else south + 1
-
-    return listOf(north, south, east, west, northWest, northEast, southWest, southEast).filterNot { it == 0 }
-}
-
-fun GameBox.applyRules(neighbours: List<GameBox>): LifeStatus = when {
-    firstRule(neighbours) -> LifeStatus.Alive
-    secondRule(neighbours) -> LifeStatus.Dead
-    else -> status
-}
-
-private fun GameBox.firstRule(neighbours: List<GameBox>) = status == LifeStatus.Dead
-        && neighbours.count { it.status == LifeStatus.Alive } == 3
-
-private fun GameBox.secondRule(neighbours: List<GameBox>) = status == LifeStatus.Alive
-        && neighbours.count { it.status == LifeStatus.Alive } < 2
-        || neighbours.count { it.status == LifeStatus.Alive } > 3
 
 
 @ExperimentalFoundationApi
@@ -209,6 +145,6 @@ private fun GameBox.secondRule(neighbours: List<GameBox>) = status == LifeStatus
 @Composable
 fun DefaultPreview() {
     TheGameOfLifeTheme {
-        GameGrid(createBoard(30, 5))
+        GameGrid(GameBoard(listOf(), 5))
     }
 }
