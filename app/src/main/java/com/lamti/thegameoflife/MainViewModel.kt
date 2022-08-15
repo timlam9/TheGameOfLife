@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import com.lamti.thegameoflife.domain.GameBoard
 import com.lamti.thegameoflife.domain.GameEngine
 import com.lamti.thegameoflife.domain.Screen
+import com.lamti.thegameoflife.ui.theme.BOX_WIDTH
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -14,6 +15,9 @@ class MainViewModel(private val gameEngine: GameEngine = GameEngine()) : ViewMod
 
     private val _screenStateFlow = MutableStateFlow(Screen.Game)
     val screenStateFlow: StateFlow<Screen> = _screenStateFlow
+
+    private val _cellSizeFlow = MutableStateFlow(BOX_WIDTH)
+    val cellSizeFlow: StateFlow<Int> = _cellSizeFlow
 
 
     fun initBoard(listRange: Int, columns: Int) {
@@ -34,6 +38,12 @@ class MainViewModel(private val gameEngine: GameEngine = GameEngine()) : ViewMod
 
     fun closeSettingsButtonClicked() {
         _screenStateFlow.update { Screen.Game }
+    }
+
+    fun onSliderValueChanged(value: Float) {
+        _cellSizeFlow.update {
+            (value * 80).toInt()
+        }
     }
 
 }
