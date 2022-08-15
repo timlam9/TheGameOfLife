@@ -22,6 +22,7 @@ import com.lamti.thegameoflife.ui.theme.PADDING
 fun MainScreen(viewModel: MainViewModel) {
     val screenState: Screen = viewModel.screenStateFlow.collectAsState().value
     val cellSize = viewModel.cellSizeFlow.collectAsState().value
+    val board = viewModel.board.collectAsState().value
 
     val screenHeight = LocalConfiguration.current.screenHeightDp
     val screenWidth = LocalConfiguration.current.screenWidthDp
@@ -29,11 +30,7 @@ fun MainScreen(viewModel: MainViewModel) {
     val columns: Int = (screenWidth / cellSize)
     val listRange: Int = (screenHeight / cellSize) * columns
 
-    LaunchedEffect(Unit) {
-        viewModel.initBoard(listRange, columns)
-    }
-
-    val board = viewModel.board.collectAsState().value
+    LaunchedEffect(Unit) { viewModel.initBoard(listRange, columns) }
     viewModel.updateState()
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -45,9 +42,10 @@ fun MainScreen(viewModel: MainViewModel) {
             contentAlignment = Alignment.BottomEnd,
         ) {
             AnimatedVisibility(visible = screenState == Screen.Game) {
-                IconButton(icon = R.drawable.ic_settings) {
-                    viewModel.settingsButtonClicked()
-                }
+                IconButton(
+                    icon = R.drawable.ic_settings,
+                    onclick = viewModel::settingsButtonClicked
+                )
             }
             AnimatedVisibility(visible = screenState == Screen.Settings) {
                 Settings(

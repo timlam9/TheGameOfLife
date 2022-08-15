@@ -19,7 +19,6 @@ class MainViewModel(private val gameEngine: GameEngine = GameEngine()) : ViewMod
     private val _cellSizeFlow = MutableStateFlow(BOX_WIDTH)
     val cellSizeFlow: StateFlow<Int> = _cellSizeFlow
 
-
     fun initBoard(listRange: Int, columns: Int) {
         gameEngine.createRandomBoard(listRange, columns)
     }
