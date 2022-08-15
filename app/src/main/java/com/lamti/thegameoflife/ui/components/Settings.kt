@@ -25,7 +25,9 @@ import com.lamti.thegameoflife.ui.theme.WhiteTransparent
 @Composable
 fun Settings(
     modifier: Modifier = Modifier,
+    isMatrixThemeOn: Boolean,
     color: Color = WhiteTransparent,
+    onMatrixThemeClicked: () -> Unit,
     onCloseClicked: () -> Unit,
     onRestartClicked: () -> Unit,
     onSliderValueChanged: (Float) -> Unit,
@@ -46,10 +48,18 @@ fun Settings(
                 IconButton(icon = R.drawable.ic_close, onclick = onCloseClicked)
             }
             CellSizeSlider(onSliderValueChanged)
-            RestartButton(
-                modifier = Modifier.padding(PADDING.dp),
-                onClick = onRestartClicked
-            )
+            Row(modifier = Modifier.fillMaxWidth()) {
+                TextButton(
+                    modifier = Modifier.padding(PADDING.dp),
+                    text = "Matrix Theme: $isMatrixThemeOn",
+                    onClick = onMatrixThemeClicked
+                )
+                TextButton(
+                    modifier = Modifier.padding(PADDING.dp),
+                    text = "Restart",
+                    onClick = onRestartClicked
+                )
+            }
         }
     }
 }

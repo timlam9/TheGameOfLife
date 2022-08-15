@@ -1,10 +1,8 @@
 package com.lamti.thegameoflife.domain
 
-import androidx.compose.ui.graphics.Color
-
-enum class LifeStatus(val color: Color) {
-    Dead(Color.DarkGray),
-    Alive(Color.White);
+enum class LifeStatus {
+    Dead,
+    Alive;
 
     companion object {
 

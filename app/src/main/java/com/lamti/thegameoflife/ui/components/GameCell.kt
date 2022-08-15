@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.Card
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -20,8 +21,8 @@ import com.lamti.thegameoflife.ui.theme.ELEVATION
 @Composable
 fun GameCell(
     text: String,
-    color: Color = Color.DarkGray,
-    textColor: Color = Color.White,
+    color: Color = MaterialTheme.colors.background,
+    textColor: Color = MaterialTheme.colors.onBackground,
     showText: Boolean = false
 ) {
     Card(

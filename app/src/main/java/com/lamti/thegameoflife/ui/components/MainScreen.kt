@@ -23,6 +23,7 @@ fun MainScreen(viewModel: MainViewModel) {
     val screenState: Screen = viewModel.screenStateFlow.collectAsState().value
     val cellSize = viewModel.cellSizeFlow.collectAsState().value
     val board = viewModel.board.collectAsState().value
+    val isMatrixThemeOn = viewModel.isMatrixThemeOn.collectAsState().value
 
     val screenHeight = LocalConfiguration.current.screenHeightDp
     val screenWidth = LocalConfiguration.current.screenWidthDp
@@ -34,7 +35,7 @@ fun MainScreen(viewModel: MainViewModel) {
     viewModel.updateState()
 
     Box(modifier = Modifier.fillMaxSize()) {
-        GameGrid(board, cellSize)
+        GameGrid(board, cellSize, isMatrixThemeOn)
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -49,6 +50,8 @@ fun MainScreen(viewModel: MainViewModel) {
             }
             AnimatedVisibility(visible = screenState == Screen.Settings) {
                 Settings(
+                    isMatrixThemeOn = viewModel.isMatrixThemeOn.collectAsState().value,
+                    onMatrixThemeClicked = viewModel::matrixThemeClicked,
                     onCloseClicked = viewModel::closeSettingsButtonClicked,
                     onRestartClicked = { viewModel.restartGame(listRange, columns) },
                     onSliderValueChanged = viewModel::onSliderValueChanged

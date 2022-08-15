@@ -19,6 +19,9 @@ class MainViewModel(private val gameEngine: GameEngine = GameEngine()) : ViewMod
     private val _cellSizeFlow = MutableStateFlow(BOX_WIDTH)
     val cellSizeFlow: StateFlow<Int> = _cellSizeFlow
 
+    private val _isMatrixThemeOn = MutableStateFlow(false)
+    val isMatrixThemeOn: MutableStateFlow<Boolean> = _isMatrixThemeOn
+
     fun initBoard(listRange: Int, columns: Int) {
         gameEngine.createRandomBoard(listRange, columns)
     }
@@ -43,6 +46,10 @@ class MainViewModel(private val gameEngine: GameEngine = GameEngine()) : ViewMod
         _cellSizeFlow.update {
             (value * 80).toInt()
         }
+    }
+
+    fun matrixThemeClicked() {
+        _isMatrixThemeOn.update { !it }
     }
 
 }
