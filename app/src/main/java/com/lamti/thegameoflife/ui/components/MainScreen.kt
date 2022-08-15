@@ -13,8 +13,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
+import com.lamti.thegameoflife.MainViewModel
 import com.lamti.thegameoflife.R
-import com.lamti.thegameoflife.domain.GameEngine
 import com.lamti.thegameoflife.ui.theme.BOX_WIDTH
 import com.lamti.thegameoflife.ui.theme.PADDING
 import kotlinx.coroutines.Dispatchers
@@ -32,7 +32,7 @@ enum class Screen {
 
 @ExperimentalFoundationApi
 @Composable
-fun MainScreen(gameEngine: GameEngine) {
+fun MainScreen(viewModel: MainViewModel) {
     val coroutineScope = rememberCoroutineScope()
     val cellSize = cellSizeFlow.collectAsState().value
 
@@ -42,20 +42,14 @@ fun MainScreen(gameEngine: GameEngine) {
     val columns: Int = (screenWidth / cellSize)
     val listRange: Int = (screenHeight / cellSize) * columns
 
-    val board = gameEngine.board.collectAsState().value
     val screenState = screenStateFlow.collectAsState().value
 
     LaunchedEffect(Unit) {
-        launch(Dispatchers.Default) {
-            gameEngine.createRandomBoard(listRange, columns)
-        }
+        viewModel.initBoard(listRange, columns)
     }
 
-    LaunchedEffect(board) {
-        launch(Dispatchers.Default) {
-            gameEngine.updateState()
-        }
-    }
+    val board = viewModel.board.collectAsState().value
+    viewModel.updateState()
 
     Box(modifier = Modifier.fillMaxSize()) {
         GameGrid(board, cellSize)
@@ -75,14 +69,8 @@ fun MainScreen(gameEngine: GameEngine) {
             }
             AnimatedVisibility(visible = screenState == Screen.Settings) {
                 Settings(
-                    onCloseClicked = {
-                        screenStateFlow.update { Screen.Game }
-                    },
-                    onRestartClicked = {
-                        coroutineScope.launch(Dispatchers.Default) {
-                            gameEngine.createRandomBoard(listRange, columns)
-                        }
-                    },
+                    onCloseClicked = { screenStateFlow.update { Screen.Game } },
+                    onRestartClicked = { viewModel.restartGame(listRange, columns) },
                     onSliderValueChanged = { value ->
                         coroutineScope.launch(Dispatchers.Default) {
                             cellSizeFlow.update {
@@ -91,7 +79,7 @@ fun MainScreen(gameEngine: GameEngine) {
 
                             val updatedColumns: Int = (screenWidth / cellSize)
                             val updatedListRange: Int = (screenHeight / cellSize) * columns
-                            gameEngine.createRandomBoard(updatedListRange, updatedColumns)
+                            viewModel.restartGame(updatedListRange, updatedColumns)
                         }
                     }
                 )

@@ -7,6 +7,7 @@ import android.view.WindowInsetsController
 import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
@@ -16,7 +17,6 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
-import com.lamti.thegameoflife.domain.GameEngine
 import com.lamti.thegameoflife.ui.components.MainScreen
 import com.lamti.thegameoflife.ui.theme.TheGameOfLifeTheme
 
@@ -24,7 +24,7 @@ import com.lamti.thegameoflife.ui.theme.TheGameOfLifeTheme
 @ExperimentalFoundationApi
 class MainActivity : ComponentActivity() {
 
-    private val gameEngine = GameEngine()
+    private val viewModel: MainViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,7 +32,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             TheGameOfLifeTheme {
                 Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.background) {
-                    MainScreen(gameEngine)
+                    MainScreen(viewModel)
                 }
             }
         }
