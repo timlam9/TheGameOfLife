@@ -11,16 +11,12 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import com.lamti.thegameoflife.domain.GameEngine
-import com.lamti.thegameoflife.ui.components.GameGrid
 import com.lamti.thegameoflife.ui.components.MainScreen
 import com.lamti.thegameoflife.ui.theme.TheGameOfLifeTheme
 
@@ -62,17 +58,5 @@ class MainActivity : ComponentActivity() {
         val windowInsetsController = ViewCompat.getWindowInsetsController(window.decorView) ?: return
         windowInsetsController.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
         windowInsetsController.hide(WindowInsetsCompat.Type.systemBars())
-    }
-}
-
-@ExperimentalFoundationApi
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    val gameEngine = GameEngine().apply {
-        createRandomBoard(30, 5)
-    }
-    TheGameOfLifeTheme {
-        GameGrid(gameEngine.board.collectAsState().value)
     }
 }

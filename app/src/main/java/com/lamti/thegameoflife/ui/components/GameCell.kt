@@ -15,6 +15,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.lamti.thegameoflife.ui.theme.CELL_PADDING
+import com.lamti.thegameoflife.ui.theme.ELEVATION
 
 @Composable
 fun GameCell(
@@ -28,7 +29,7 @@ fun GameCell(
         modifier = Modifier
             .padding(CELL_PADDING.dp)
             .aspectRatio(1f),
-        elevation = 8.dp,
+        elevation = ELEVATION.dp,
     ) {
         AnimatedVisibility(visible = showText) {
             Text(

@@ -8,16 +8,15 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
 import com.lamti.thegameoflife.domain.GameBoard
-import com.lamti.thegameoflife.ui.theme.BOX_WIDTH
 import com.lamti.thegameoflife.ui.theme.GRID_PADDING
 
 @ExperimentalFoundationApi
 @Composable
-fun GameGrid(board: GameBoard) {
+fun GameGrid(board: GameBoard, cellSize: Int) {
     val gridState = rememberLazyListState()
 
     LazyVerticalGrid(
-        cells = GridCells.Adaptive(BOX_WIDTH.dp),
+        cells = GridCells.Adaptive(cellSize.dp),
         state = gridState,
         contentPadding = PaddingValues(GRID_PADDING.dp),
         content = {
